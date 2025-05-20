@@ -34,6 +34,12 @@ async function run() {
 
     const recipesCollection = client.db('recipeDB').collection('recipes')
 
+    app.get('/recipes',async(req,res)=>{
+       const cursor = recipesCollection.find();
+       const result = await cursor.toArray();
+       res.send(result);
+    })
+
 
 app.post('/recipes',async(req,res)=>{
     const newRecipe = req.body;
@@ -41,6 +47,25 @@ app.post('/recipes',async(req,res)=>{
     const result = await recipesCollection.insertOne(newRecipe);
     res.send(result);
 })
+
+
+// Get recipe by ID
+app.get('/recipes/:id', async (req, res) => {
+  const recipe = await Recipe.findById(req.params.id);
+  res.json(recipe);
+});
+
+// Update like count
+app.patch('/recipes/:id/like', async (req, res) => {
+  const updated = await Recipe.findByIdAndUpdate(
+    req.params.id,
+    { $inc: { likes: 1 } },
+    { new: true }
+  );
+  res.json(updated);
+});
+
+
 
 
 
