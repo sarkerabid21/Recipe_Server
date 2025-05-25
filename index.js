@@ -15,9 +15,7 @@ app.use(express.json());
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.gc9ahnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-// const uri = `mongodb+srv://<db_username>:<db_password>@cluster0.gc9ahnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -29,21 +27,20 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
 
-    // Connect the client to the server	(optional starting in v4.7)
+    
     await client.connect();
 
     const recipesCollection = client.db('recipeDB').collection('recipes')
     const userCollection = client.db('recipeDB').collection('users');
 
-    
-// server.js
+
 app.get('/recipes', async (req, res) => {
   const { userEmail } = req.query;
   const filter = userEmail ? { userEmail } : {};
   const recipes = await recipesCollection.find(filter).toArray();
   res.send(recipes);
 });
-// Get single recipe by ID
+
 app.get('/recipes/:id', async (req, res) => {
   try {
     const id = req.params.id;
@@ -60,11 +57,7 @@ app.get('/recipes/:id', async (req, res) => {
 });
 
 
-// app.post('/recipes', async (req, res) => {
-//   const newRecipe = req.body;
-//   const result = await recipesCollection.insertOne(newRecipe);
-//   res.send(result);
-// });
+
 app.post('/recipes', async (req, res) => {
   const newRecipe = {
     ...req.body,
@@ -96,12 +89,12 @@ app.patch('/recipes/:id/like', async (req, res) => {
       return res.status(404).json({ error: "Recipe not found" });
     }
 
-    // ✅ যদি user নিজের recipe like করতে চায়
+    
     if (recipe.userEmail === userEmail) {
       return res.status(403).json({ error: "You cannot like your own recipe" });
     }
 
-    // ✅ আগেই লাইক করলে আর লাইক না করুক
+    
     if (recipe.likedBy && recipe.likedBy.includes(userEmail)) {
       return res.status(200).json({ message: "Already liked" });
     }
@@ -121,12 +114,12 @@ app.patch('/recipes/:id/like', async (req, res) => {
   }
 });
 
-// Get top 6 recipes by likes
+
 app.get('/top-recipes', async (req, res) => {
   try {
     const topRecipes = await recipesCollection
       .find()
-      .sort({ likes: -1 }) // sort descending
+      .sort({ likes: -1 }) 
       .limit(6)
       .toArray();
     res.send(topRecipes);
@@ -166,12 +159,11 @@ app.post('/users', async(req, res) => {
 
 
 
-    // Send a ping to confirm a successful connection
+  
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
+    
   }
 }
 run().catch(console.dir);
