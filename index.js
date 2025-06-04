@@ -28,7 +28,7 @@ async function run() {
   try {
 
     
-    await client.connect();
+    // await client.connect();
 
     const recipesCollection = client.db('recipeDB').collection('recipes')
     const userCollection = client.db('recipeDB').collection('users');
@@ -160,8 +160,8 @@ app.post('/users', async(req, res) => {
 
 
   
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     
   }
